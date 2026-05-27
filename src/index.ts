@@ -35,6 +35,13 @@ export type {
   DataTableFilterValue,
 } from './components/DataTableFilter'
 
+// Predefined layouts that compose the components above
+export { DataTableSplitLayout } from './components/layouts/DataTableSplitLayout'
+export type {
+  DataTableSplitLayoutProps,
+  DataTableSplitLayoutClassNames,
+} from './components/layouts/DataTableSplitLayout'
+
 // Shadcn-style UI primitives — re-exported so consumers can use them
 // directly (or swap them for their own).
 export { Button, buttonVariants } from './components/ui/button'

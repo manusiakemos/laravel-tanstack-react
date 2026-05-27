@@ -1,5 +1,5 @@
 /**
- * Example: Users index page with server-side TanStack Table.
+ * Example: Users index page with the predefined "split toolbar" layout.
  *
  * Backend route (Laravel):
  *   Route::get('/datatable/users', UserDataTableController::class)
@@ -18,10 +18,9 @@
  */
 
 import {
-  DataTable,
+  Button,
   DataTableFilter,
-  DataTablePagination,
-  DataTableSearch,
+  DataTableSplitLayout,
   useDataTable,
 } from '@manusiakemos/laravel-tanstack-react'
 
@@ -58,59 +57,42 @@ export default function UsersIndex() {
   }
 
   return (
-    <div className="p-6 space-y-4">
-      {/* Search + filters row */}
-      <div className="flex flex-wrap items-center gap-3">
-        {/* Debounced search (default) */}
-        <DataTableSearch
-          table={table}
-          placeholder="Search name or email..."
-          className="w-full max-w-md"
-        />
-
-        {/* OR — manual-submit search with a button */}
-        {/*
-        <DataTableSearch
-          table={table}
-          debounce={false}
-          placeholder="Search..."
-        />
-        */}
-
-        <DataTableFilter
-          table={table}
-          columnId="status"
-          options={[
-            { label: 'Active', value: 'active' },
-            { label: 'Inactive', value: 'inactive' },
-          ]}
-          placeholder="All statuses"
-        />
-
-        <DataTableFilter
-          table={table}
-          columnId="role"
-          type="multiselect"
-          options={[
-            { label: 'Admin', value: 'admin' },
-            { label: 'Editor', value: 'editor' },
-            { label: 'Viewer', value: 'viewer' },
-          ]}
-        />
-      </div>
-
-      <DataTable
-        table={table}
-        loading={loading}
-        emptyMessage="No users found."
-      />
-
-      <DataTablePagination
+    <div className="p-6">
+      <DataTableSplitLayout
         table={table}
         meta={meta}
-        showPageSize
-        showFirstLast
-        pageSizeOptions={[10, 25, 50, 100]}
+        loading={loading}
+        searchProps={{ placeholder: 'Search name or email...' }}
+        filters={
+          <>
+            <DataTableFilter
+              table={table}
+              columnId="status"
+              options={[
+                { label: 'Active', value: 'active' },
+                { label: 'Inactive', value: 'inactive' },
+              ]}
+              placeholder="All statuses"
+            />
+            <DataTableFilter
+              table={table}
+              columnId="role"
+              type="multiselect"
+              options={[
+                { label: 'Admin', value: 'admin' },
+                { label: 'Editor', value: 'editor' },
+                { label: 'Viewer', value: 'viewer' },
+              ]}
+            />
+          </>
+        }
+        actions={<Button>+ Add user</Button>}
+        paginationProps={{
+          showPageSize: true,
+          showFirstLast: true,
+          pageSizeOptions: [10, 25, 50, 100],
+        }}
+        tableProps={{ emptyMessage: 'No users found.' }}
       />
     </div>
   )

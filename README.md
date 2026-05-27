@@ -203,6 +203,53 @@ Per-column filter. Four built-in modes:
 />
 ```
 
+### `<DataTableSplitLayout />`
+
+Predefined "split toolbar" layout that composes `DataTableSearch`, `DataTableFilter`s, `DataTable`, and `DataTablePagination` for you — search left, filters/actions right, table in the middle, pagination info left + controls right.
+
+```tsx
+import {
+  Button,
+  DataTableFilter,
+  DataTableSplitLayout,
+  useDataTable,
+} from '@manusiakemos/laravel-tanstack-react'
+
+const { table, loading, meta } = useDataTable<User>({ /* ... */ })
+
+return (
+  <DataTableSplitLayout
+    table={table}
+    meta={meta}
+    loading={loading}
+    searchProps={{ placeholder: 'Search users...' }}
+    filters={
+      <>
+        <DataTableFilter table={table} columnId="status" options={statusOpts} />
+        <DataTableFilter table={table} columnId="role" type="multiselect" options={roleOpts} />
+      </>
+    }
+    actions={<Button>+ Add user</Button>}
+    paginationProps={{ showPageSize: true, showFirstLast: true }}
+    tableProps={{ emptyMessage: 'No users found.' }}
+  />
+)
+```
+
+| Prop | Type | Description |
+|---|---|---|
+| `table` | `Table<TData>` | Required. From `useDataTable`. |
+| `meta` | `DataTableMeta \| null` | For the row-count summary. |
+| `loading` | `boolean` | Forwarded to `<DataTable />`. |
+| `search` | `ReactNode` | Override the entire search slot. |
+| `searchProps` | `Partial<DataTableSearchProps>` | Forwarded to the auto-rendered search. |
+| `filters` | `ReactNode` | Right-toolbar slot (typically one or more `<DataTableFilter />`s). |
+| `actions` | `ReactNode` | Far-right slot for page-level actions (Add button, export, …). |
+| `tableProps` | `Partial<DataTableProps>` | Forwarded to `<DataTable />`. |
+| `paginationProps` | `Partial<DataTablePaginationProps>` | Forwarded to `<DataTablePagination />`. |
+| `className` | `string` | Root wrapper class. |
+| `classNames` | `{ root, toolbar, toolbarLeft, toolbarRight, body, footer }` | Fine-grained class names. |
+
 ### Shadcn primitives
 
 The bundled primitives are re-exported so you can compose your own UI without pulling in a separate copy:

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `<DataTableSearch />` — global search with `debounce: boolean | number`; when `debounce={false}` it renders an input + Search button (submits on click / Enter)
   - `<DataTablePagination />` — prev/next, optional first/last, optional page-size selector, customizable labels & `classNames`
   - `<DataTableFilter />` — built-in `select`, `multiselect`, `input` modes, plus a `render` prop for fully custom UI
+  - `<DataTableSplitLayout />` — predefined "split toolbar" layout (search left / filters right, pagination info left / controls right) that wires the four components above for you
 - Bundled shadcn-style primitives re-exported (`Button`, `Input`, `Select`, `Table`*, `cn`) so consumers can compose their own UI
 - `render` prop on every `DataTable*` component for full UI replacement while keeping table wiring
 - Runtime deps: `clsx`, `tailwind-merge`, `class-variance-authority`, `lucide-react`
