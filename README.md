@@ -36,7 +36,7 @@ export default function UsersIndex() {
   const { table, loading, meta } = useDataTable<User>({
     endpoint: '/datatable/users',
     columns: [
-      { accessorKey: 'name', header: 'Nama' },
+      { accessorKey: 'name', header: 'Name' },
       { accessorKey: 'email', header: 'Email' },
     ],
   })
@@ -178,7 +178,7 @@ export default function Index() {
 const { table } = useDataTable<User>({
   endpoint: '/datatable/users',
   columns: [
-    { accessorKey: 'name', header: 'Nama' },
+    { accessorKey: 'name', header: 'Name' },
     {
       accessorKey: 'status',
       header: 'Status',
@@ -241,6 +241,129 @@ See the [backend package docs](https://github.com/manusiakemos/laravel-tanstack)
 - [ ] URL state sync (mirror table state in `?page=...&sort=...`)
 - [ ] Optimistic row updates
 - [ ] Built-in CSV export trigger
+
+## Contributing
+
+Contributions are welcome — bug fixes, new features, docs, and tests.
+
+### Language policy
+
+**All contributions must be in English.** This applies to:
+
+- Source code: identifiers (variables, functions, types, files), string literals, JSX text, UI copy, placeholders, error messages, and log output.
+- Comments and JSDoc.
+- Documentation: README, examples, code samples, and any other Markdown.
+- Commit messages, PR titles, and PR descriptions.
+- Issue reports and discussion replies.
+
+This keeps the package usable by the broadest possible audience and consistent for future maintainers. If you need locale-specific copy in your own app, override it on the consumer side (e.g. translate column headers in your call to `useDataTable`); do not localize the package itself.
+
+### Getting set up
+
+```bash
+git clone https://github.com/manusiakemos/laravel-tanstack-react.git
+cd laravel-tanstack-react
+npm install
+```
+
+Node 18+ is required.
+
+### Workflow
+
+1. Fork the repo and create a topic branch off `main`:
+   ```bash
+   git checkout -b fix/short-description
+   ```
+2. Make your change. Keep the public API surface small and the diff focused.
+3. Add or update tests for any behavior change. The suite lives under `tests/` and runs against `happy-dom`.
+4. Run the full check locally before opening a PR:
+   ```bash
+   npm run lint
+   npm run format
+   npm run typecheck
+   npm run test
+   npm run build
+   ```
+5. Update `CHANGELOG.md` under `## [Unreleased]` describing the change (Added / Changed / Fixed / Removed).
+6. Open a pull request against `main`. Include:
+   - what changed and why
+   - any breaking-change notes (call them out explicitly)
+   - a code sample if you added a new option or hook
+
+### Commit style
+
+Short, imperative, present tense. Prefix with a conventional scope when useful:
+
+```
+feat: add `extraHeaders` option to default fetcher
+fix: cancel in-flight request when endpoint changes
+docs: clarify Sanctum CSRF requirement
+```
+
+### Reporting bugs
+
+Open an issue at [github.com/manusiakemos/laravel-tanstack-react/issues](https://github.com/manusiakemos/laravel-tanstack-react/issues) with:
+
+- a minimal reproduction (CodeSandbox or repo)
+- the version of this package, `@tanstack/react-table`, and React you're on
+- the actual vs. expected behavior
+
+## Publishing updates
+
+Releases are published to npm under [`@manusiakemos/laravel-tanstack-react`](https://www.npmjs.com/package/@manusiakemos/laravel-tanstack-react). Only maintainers with publish access on the `@manusiakemos` scope can cut a release.
+
+### Versioning
+
+This package follows [Semantic Versioning](https://semver.org/):
+
+- `patch` — bug fix, internal refactor, doc change, no API change
+- `minor` — backwards-compatible new feature or new option
+- `major` — breaking change to the public API (rename, removal, behavior change)
+
+While the version is `0.x`, breaking changes bump the **minor** segment per SemVer's pre-1.0 convention.
+
+### Release checklist
+
+1. Make sure `main` is clean and all CI checks pass.
+2. Move entries under `## [Unreleased]` in `CHANGELOG.md` to a new dated heading:
+   ```md
+   ## [0.2.0] - 2026-05-27
+   ```
+   Leave an empty `## [Unreleased]` section at the top for the next cycle.
+3. Bump the version. `npm version` updates `package.json`, creates a git commit, and tags the release:
+   ```bash
+   npm version patch   # or `minor`, or `major`
+   ```
+4. Push the commit and tag:
+   ```bash
+   git push origin main --follow-tags
+   ```
+5. Publish. The `prepublishOnly` script runs `typecheck`, `test`, and `build` automatically — do not skip it:
+   ```bash
+   npm publish
+   ```
+   The package is published under `--access public` via `publishConfig`, so no extra flag is needed.
+6. Verify the new version is live:
+   ```bash
+   npm view @manusiakemos/laravel-tanstack-react version
+   ```
+7. Draft a GitHub release for the new tag and paste the changelog entry into the body.
+
+### Publishing a pre-release
+
+For early feedback on a breaking change, publish under a dist-tag instead of `latest`:
+
+```bash
+npm version 0.2.0-beta.0
+npm publish --tag next
+```
+
+Consumers opt in with `npm install @manusiakemos/laravel-tanstack-react@next`.
+
+### If a publish goes wrong
+
+- **Wrong version published:** do not delete it. Bump again with a patch and publish a corrected build. npm forbids re-publishing the same version.
+- **Bad build shipped:** within 72 hours you can `npm deprecate @manusiakemos/laravel-tanstack-react@<version> "use <newer> instead"` to warn installers, then publish a fixed patch.
 
 ## License
 

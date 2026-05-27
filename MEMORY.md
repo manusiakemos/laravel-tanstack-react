@@ -2,6 +2,11 @@
 
 Log of significant decisions about direction, format, content, approach, or strategy.
 
+## 2026-05-27, English-only language policy for the package
+**What was decided:** All package content — source code (identifiers, string literals, UI copy, placeholders), comments, JSDoc, documentation (README, examples, Markdown), commit messages, PR titles/descriptions, and issue replies — must be written in English. Existing Indonesian strings (`'Nama'`, `"Cari nama atau email..."`) were translated to English in `src/hooks/useDataTable.ts`, `examples/inertia-users-index.tsx`, and `README.md`. The rule is published as a "Language policy" subsection in the README's Contributing section.
+**Why:** User requested it. Consistency aids future maintainers; English is the lingua franca of the npm ecosystem and the package's target audience extends well beyond Indonesian speakers. Locale-specific copy belongs in the consumer app (e.g. translated `header` values passed into `useDataTable`), not in the library.
+**What was rejected:** Leaving Indonesian sample strings as "flavor" — risks confusing non-Indonesian users and looks inconsistent next to English JSDoc. Also rejected a separate `CONTRIBUTING.md` for the language rule — inlining in README keeps it discoverable next to the rest of the contribution guidance. Did NOT touch the npm scope `manusiakemos` or the user handle, since those are brand identifiers, not natural-language content.
+
 ## 2026-05-27, Switched README Inertia example from Ziggy to Laravel Wayfinder
 **What was decided:** Replace the `route('users.datatable')` Ziggy helper in the Inertia integration example with `datatable.url()` imported from `@/routes/users`, the Laravel Wayfinder generated helper.
 **Why:** User requested replacing Ziggy with Wayfinder. Wayfinder generates fully-typed TypeScript route helpers, giving the example better type safety and matching the modern Laravel + Inertia + TS stack the package targets. `.url()` returns a plain string, which is what the `endpoint` option expects.

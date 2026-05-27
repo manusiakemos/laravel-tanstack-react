@@ -32,7 +32,7 @@ export default function UsersIndex() {
   const { table, loading, error, meta } = useDataTable<User>({
     endpoint: '/datatable/users',
     columns: [
-      { accessorKey: 'name', header: 'Nama', enableSorting: true },
+      { accessorKey: 'name', header: 'Name', enableSorting: true },
       { accessorKey: 'email', header: 'Email', enableSorting: true },
       { accessorKey: 'role', header: 'Role' },
       {
@@ -53,7 +53,7 @@ export default function UsersIndex() {
       {/* Global search */}
       <input
         type="search"
-        placeholder="Cari nama atau email..."
+        placeholder="Search name or email..."
         value={table.getState().globalFilter ?? ''}
         onChange={(e) => table.setGlobalFilter(e.target.value)}
         className="border rounded px-3 py-2 mb-4 w-full max-w-md"

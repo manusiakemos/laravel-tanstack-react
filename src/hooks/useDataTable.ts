@@ -61,7 +61,7 @@ export interface UseDataTableResult<TData> {
  * const { table, loading } = useDataTable<User>({
  *   endpoint: '/datatable/users',
  *   columns: [
- *     { accessorKey: 'name', header: 'Nama' },
+ *     { accessorKey: 'name', header: 'Name' },
  *     { accessorKey: 'email', header: 'Email' },
  *   ],
  * })
