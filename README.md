@@ -160,10 +160,11 @@ Inertia handles the page shell (layout, auth, navigation). This hook handles the
 ```tsx
 // pages/Users/Index.tsx (rendered by Inertia)
 import { useDataTable } from '@manusiakemos/laravel-tanstack-react'
+import { datatable } from '@/routes/users'  // Laravel Wayfinder generated helper
 
 export default function Index() {
   const { table } = useDataTable<User>({
-    endpoint: route('users.datatable'),  // Ziggy route helper
+    endpoint: datatable.url(),  // typed URL from Wayfinder
     columns: [/* ... */],
   })
 
