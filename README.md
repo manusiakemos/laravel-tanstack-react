@@ -23,59 +23,197 @@ composer require manusiakemos/laravel-tanstack
 ## Quick start
 
 ```tsx
-import { useDataTable } from '@manusiakemos/laravel-tanstack-react'
-import { flexRender } from '@tanstack/react-table'
+import {
+  DataTable,
+  DataTableFilter,
+  DataTablePagination,
+  DataTableSearch,
+  useDataTable,
+} from '@manusiakemos/laravel-tanstack-react'
 
 interface User {
   id: number
   name: string
   email: string
+  status: 'active' | 'inactive'
 }
 
 export default function UsersIndex() {
   const { table, loading, meta } = useDataTable<User>({
     endpoint: '/datatable/users',
     columns: [
-      { accessorKey: 'name', header: 'Name' },
-      { accessorKey: 'email', header: 'Email' },
+      { accessorKey: 'name', header: 'Name', enableSorting: true },
+      { accessorKey: 'email', header: 'Email', enableSorting: true },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        enableColumnFilter: true,
+      },
     ],
   })
 
   return (
-    <table>
-      <thead>
-        {table.getHeaderGroups().map((hg) => (
-          <tr key={hg.id}>
-            {hg.headers.map((h) => (
-              <th
-                key={h.id}
-                onClick={h.column.getToggleSortingHandler()}
-              >
-                {flexRender(h.column.columnDef.header, h.getContext())}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-3">
+        <DataTableSearch table={table} placeholder="Search users..." />
+        <DataTableFilter
+          table={table}
+          columnId="status"
+          options={[
+            { label: 'Active', value: 'active' },
+            { label: 'Inactive', value: 'inactive' },
+          ]}
+          placeholder="All statuses"
+        />
+      </div>
+
+      <DataTable table={table} loading={loading} />
+
+      <DataTablePagination
+        table={table}
+        meta={meta}
+        showPageSize
+        showFirstLast
+      />
+    </div>
   )
 }
 ```
 
 That's it. Pagination, sorting, filtering, and global search are all wired up. Your backend controller stays under 10 lines (see the Composer package README).
 
-See the [full Inertia example](./examples/inertia-users-index.tsx) for pagination UI, loading states, and global search input.
+> **Styling.** Components ship pre-styled with [shadcn/ui](https://ui.shadcn.com)-style Tailwind classes (Button, Input, Select, Table primitives are bundled). Make sure Tailwind is configured in your app with the standard shadcn theme tokens (`--background`, `--foreground`, `--primary`, `--border`, `--ring`, `--muted-foreground`, etc.). Every component accepts `className`, fine-grained `classNames`, and a full `render` prop so you can swap in your own UI.
+
+See the [full Inertia example](./examples/inertia-users-index.tsx) for pagination, filters, and search wiring.
+
+## Components
+
+All four components below are **fully customizable via props** — you can override class names, labels, sub-element styles, or replace the entire UI via the `render` prop while keeping the table wiring intact.
+
+### `<DataTable />`
+
+Shadcn-styled table with built-in sort indicators, empty state, and loading state.
+
+```tsx
+<DataTable
+  table={table}
+  loading={loading}
+  emptyMessage="No users yet."
+  loadingMessage="Fetching..."
+  onRowClick={(user) => navigate(`/users/${user.id}`)}
+  className="rounded-lg"
+  classNames={{ row: 'hover:bg-muted/30', cell: 'py-3' }}
+/>
+```
+
+### `<DataTableSearch />`
+
+Global search. Debounced by default; pass `debounce={false}` to switch to **manual mode with a Search button** (input + button, submits on click or Enter).
+
+```tsx
+{/* Debounced (default, 300ms) */}
+<DataTableSearch table={table} placeholder="Search..." />
+
+{/* Custom debounce delay */}
+<DataTableSearch table={table} debounce={500} />
+
+{/* Manual submit — Search button */}
+<DataTableSearch table={table} debounce={false} placeholder="Search..." />
+
+{/* Fully custom UI */}
+<DataTableSearch
+  table={table}
+  render={({ value, setValue, submit }) => (
+    <MyCombobox value={value} onChange={setValue} onSubmit={submit} />
+  )}
+/>
+```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `debounce` | `boolean \| number` | `true` | `true` → 300ms; number → custom ms; `false` → manual + Search button. |
+| `placeholder` | `string` | `'Search...'` | Placeholder text. |
+| `submitLabel` | `ReactNode` | Search icon + "Search" | Button label when `debounce={false}`. |
+| `className` | `string` | — | Root wrapper class. |
+| `inputClassName` | `string` | — | Class merged into the Input. |
+| `buttonClassName` | `string` | — | Class merged into the submit Button. |
+| `onSearch` | `(value: string) => void` | — | Fired when the search is committed. |
+| `render` | `(props) => ReactNode` | — | Full UI override. |
+
+### `<DataTablePagination />`
+
+Prev/next (and optional first/last) buttons, page-size selector, row-count summary.
+
+```tsx
+<DataTablePagination
+  table={table}
+  meta={meta}
+  showPageSize
+  showFirstLast
+  pageSizeOptions={[10, 25, 50, 100]}
+  labels={{ previous: 'Prev', next: 'Next', page: 'Hal' }}
+  classNames={{ info: 'text-xs', button: 'rounded-full' }}
+/>
+```
+
+Use the `render` prop to take over rendering entirely while keeping the navigation handlers wired up.
+
+### `<DataTableFilter />`
+
+Per-column filter. Four built-in modes:
+
+```tsx
+{/* Single select */}
+<DataTableFilter
+  table={table}
+  columnId="status"
+  options={[
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' },
+  ]}
+  placeholder="All statuses"
+/>
+
+{/* Multi-select (sends ?filter[status][]=… arrays) */}
+<DataTableFilter
+  table={table}
+  columnId="role"
+  type="multiselect"
+  options={[
+    { label: 'Admin', value: 'admin' },
+    { label: 'Editor', value: 'editor' },
+  ]}
+/>
+
+{/* Text input */}
+<DataTableFilter
+  table={table}
+  columnId="name"
+  type="input"
+  placeholder="Filter name"
+/>
+
+{/* Fully custom — popover, combobox, date picker, anything */}
+<DataTableFilter
+  table={table}
+  columnId="status"
+  render={({ value, setValue }) => (
+    <MyFancyFilter value={value} onChange={setValue} />
+  )}
+/>
+```
+
+### Shadcn primitives
+
+The bundled primitives are re-exported so you can compose your own UI without pulling in a separate copy:
+
+```ts
+import {
+  Button, Input, Select,
+  Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
+  cn,
+} from '@manusiakemos/laravel-tanstack-react'
+```
 
 ## API
 

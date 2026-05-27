@@ -8,6 +8,14 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   treeshake: true,
-  external: ['react', 'react-dom', '@tanstack/react-table'],
+  external: [
+    'react',
+    'react-dom',
+    '@tanstack/react-table',
+    'clsx',
+    'tailwind-merge',
+    'class-variance-authority',
+    'lucide-react',
+  ],
   target: 'es2022',
 })

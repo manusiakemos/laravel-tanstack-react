@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Ready-made shadcn-styled components, all customizable via props:
+  - `<DataTable />` — full table with sort indicators, empty state, loading state
+  - `<DataTableSearch />` — global search with `debounce: boolean | number`; when `debounce={false}` it renders an input + Search button (submits on click / Enter)
+  - `<DataTablePagination />` — prev/next, optional first/last, optional page-size selector, customizable labels & `classNames`
+  - `<DataTableFilter />` — built-in `select`, `multiselect`, `input` modes, plus a `render` prop for fully custom UI
+- Bundled shadcn-style primitives re-exported (`Button`, `Input`, `Select`, `Table`*, `cn`) so consumers can compose their own UI
+- `render` prop on every `DataTable*` component for full UI replacement while keeping table wiring
+- Runtime deps: `clsx`, `tailwind-merge`, `class-variance-authority`, `lucide-react`
 - Initial public release
 - `useDataTable<T>()` hook with full TanStack Table integration
 - Built-in pagination, sorting, multi-column sorting, global search, per-column filters
