@@ -17,8 +17,13 @@
  *   }
  */
 
-import { flexRender } from '@tanstack/react-table'
-import { useDataTable } from '@manusiakemos/laravel-tanstack-react'
+import {
+  DataTable,
+  DataTableFilter,
+  DataTablePagination,
+  DataTableSearch,
+  useDataTable,
+} from '@manusiakemos/laravel-tanstack-react'
 
 interface User {
   id: number
@@ -34,7 +39,7 @@ export default function UsersIndex() {
     columns: [
       { accessorKey: 'name', header: 'Name', enableSorting: true },
       { accessorKey: 'email', header: 'Email', enableSorting: true },
-      { accessorKey: 'role', header: 'Role' },
+      { accessorKey: 'role', header: 'Role', enableColumnFilter: true },
       {
         accessorKey: 'status',
         header: 'Status',
@@ -45,86 +50,68 @@ export default function UsersIndex() {
   })
 
   if (error) {
-    return <div className="p-4 text-red-600">Error: {error.message}</div>
+    return (
+      <div className="p-4 text-sm text-destructive">
+        Error: {error.message}
+      </div>
+    )
   }
 
   return (
-    <div className="p-6">
-      {/* Global search */}
-      <input
-        type="search"
-        placeholder="Search name or email..."
-        value={table.getState().globalFilter ?? ''}
-        onChange={(e) => table.setGlobalFilter(e.target.value)}
-        className="border rounded px-3 py-2 mb-4 w-full max-w-md"
+    <div className="p-6 space-y-4">
+      {/* Search + filters row */}
+      <div className="flex flex-wrap items-center gap-3">
+        {/* Debounced search (default) */}
+        <DataTableSearch
+          table={table}
+          placeholder="Search name or email..."
+          className="w-full max-w-md"
+        />
+
+        {/* OR — manual-submit search with a button */}
+        {/*
+        <DataTableSearch
+          table={table}
+          debounce={false}
+          placeholder="Search..."
+        />
+        */}
+
+        <DataTableFilter
+          table={table}
+          columnId="status"
+          options={[
+            { label: 'Active', value: 'active' },
+            { label: 'Inactive', value: 'inactive' },
+          ]}
+          placeholder="All statuses"
+        />
+
+        <DataTableFilter
+          table={table}
+          columnId="role"
+          type="multiselect"
+          options={[
+            { label: 'Admin', value: 'admin' },
+            { label: 'Editor', value: 'editor' },
+            { label: 'Viewer', value: 'viewer' },
+          ]}
+        />
+      </div>
+
+      <DataTable
+        table={table}
+        loading={loading}
+        emptyMessage="No users found."
       />
 
-      <table className="w-full border-collapse">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  className="text-left p-2 border-b cursor-pointer select-none"
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
-                  {{ asc: ' ↑', desc: ' ↓' }[
-                    header.column.getIsSorted() as string
-                  ] ?? null}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {loading && (
-            <tr>
-              <td colSpan={table.getAllColumns().length} className="p-4 text-center">
-                Loading...
-              </td>
-            </tr>
-          )}
-          {!loading &&
-            table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-50">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="p-2 border-b">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-        </tbody>
-      </table>
-
-      {/* Pagination */}
-      <div className="flex items-center justify-between mt-4">
-        <div className="text-sm text-gray-600">
-          Page {table.getState().pagination.pageIndex + 1} of{' '}
-          {table.getPageCount()} · {meta?.filtered ?? 0} rows total
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="border rounded px-3 py-1 disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="border rounded px-3 py-1 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-      </div>
+      <DataTablePagination
+        table={table}
+        meta={meta}
+        showPageSize
+        showFirstLast
+        pageSizeOptions={[10, 25, 50, 100]}
+      />
     </div>
   )
 }
