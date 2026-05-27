@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bundled shadcn-style primitives re-exported (`Button`, `Input`, `Select`, `Table`*, `cn`) so consumers can compose their own UI
 - `render` prop on every `DataTable*` component for full UI replacement while keeping table wiring
 - Runtime deps: `clsx`, `tailwind-merge`, `class-variance-authority`, `lucide-react`
+- Contributing guide in README (setup, workflow, commit style, bug reports) with an English-only language policy covering source code, comments, docs, commit messages, PRs, and issues
 - Initial public release
 - `useDataTable<T>()` hook with full TanStack Table integration
 - Built-in pagination, sorting, multi-column sorting, global search, per-column filters
@@ -34,3 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Vitest test suite with happy-dom
 - Compatible with React 18 and 19
 - Compatible with `manusiakemos/laravel-tanstack` 0.1.0+
+
+### Changed
+- Inertia integration example in README now uses Laravel Wayfinder (`datatable.url()` from `@/routes/users`) instead of the Ziggy `route()` helper.
+- Translated Indonesian UI strings in `examples/inertia-users-index.tsx` to English: `'Nama'` → `'Name'`, `'Cari nama atau email...'` → `'Search name or email...'`, `'Halaman {n} dari {m} · Total {x} baris'` → `'Page {n} of {m} · {x} rows total'`, `'Sebelumnya'` → `'Previous'`, `'Selanjutnya'` → `'Next'`, `'Memuat...'` → `'Loading...'`.
