@@ -85,7 +85,7 @@ export default function UsersIndex() {
           {loading && (
             <tr>
               <td colSpan={table.getAllColumns().length} className="p-4 text-center">
-                Memuat...
+                Loading...
               </td>
             </tr>
           )}
@@ -105,8 +105,8 @@ export default function UsersIndex() {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-4">
         <div className="text-sm text-gray-600">
-          Halaman {table.getState().pagination.pageIndex + 1} dari{' '}
-          {table.getPageCount()} · Total {meta?.filtered ?? 0} baris
+          Page {table.getState().pagination.pageIndex + 1} of{' '}
+          {table.getPageCount()} · {meta?.filtered ?? 0} rows total
         </div>
         <div className="flex gap-2">
           <button
@@ -114,14 +114,14 @@ export default function UsersIndex() {
             disabled={!table.getCanPreviousPage()}
             className="border rounded px-3 py-1 disabled:opacity-50"
           >
-            Sebelumnya
+            Previous
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
             className="border rounded px-3 py-1 disabled:opacity-50"
           >
-            Selanjutnya
+            Next
           </button>
         </div>
       </div>
